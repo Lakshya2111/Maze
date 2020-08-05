@@ -32,7 +32,7 @@ class Maze():
         with open(filename) as f:
             contents=f.read()
 
-        #validate start and end TODO
+        #validate start and end
         if contents.count('A')!=1:
             print('need exactly one starting point')
         if contents.count('B')!=1:
@@ -88,6 +88,7 @@ class Maze():
                     path.append(now.pos)
                     now=now.parent
                 path.reverse()
+                print('Cost of DFS:',len(path))
                 self.solution=path[:]
                 return
             self.visited.add(now.pos)
@@ -178,6 +179,11 @@ if maze.solvable():
     print("States Explored:", maze.explored)
     print("Solution:")
     maze.print()
-    maze.output_image("maze.png", show_solution=True,show_visited=True)
+    maze.output_image("maze_DFS.png", show_solution=True,show_visited=True)
 else:
     print('No solution')
+def all(file):
+    maze = Maze(file)
+    maze.solve()
+    if maze.solvable():
+        maze.output_image("maze_DFS.png", True,False)

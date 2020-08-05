@@ -1,3 +1,4 @@
+from PIL import ImageDraw,Image
 import random,sys
 from random import randint
 height=randint(10,20)
@@ -79,3 +80,43 @@ with open(filename,'w') as file:
     for i in maze:
         file.write(''.join(i))
         file.write('\n')
+def output_image(filename):
+    cell_size = 50
+    cell_border = 2
+
+    # Create a blank canvas
+    img = Image.new(
+        "RGBA",
+        (width * cell_size, height * cell_size),
+        "black"
+    )
+    draw = ImageDraw.Draw(img)
+
+    for i in range(height):
+        for j in range(width):
+
+            # Walls
+            if maze[i][j]=='#':
+                fill = (40, 40, 40)
+
+            # Start
+            elif (i, j) == start:
+                fill = (255, 0, 0)
+
+            # End
+            elif (i, j) == end:
+                fill = (0, 171, 28)
+
+            # Empty
+            else:
+                fill = (237, 240, 252)
+
+            # Draw cell
+            draw.rectangle(
+                ([(j * cell_size + cell_border, i * cell_size + cell_border),
+                  ((j + 1) * cell_size - cell_border, (i + 1) * cell_size - cell_border)]),
+                fill=fill
+            )
+
+    img.save(filename)
+output_image('unsolved_maze.png')
