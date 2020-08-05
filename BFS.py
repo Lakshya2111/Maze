@@ -35,7 +35,7 @@ class Maze():
         with open(filename) as f:
             contents=f.read()
 
-        #validate start and end TODO
+        #validate start and end
         if contents.count('A')!=1:
             print('need exactly one starting point')
         if contents.count('B')!=1:
