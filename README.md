@@ -1,5 +1,5 @@
 # Maze
-A maze generator and solver using BFS and DFS with visual.
+A maze generator and solver using BFS, DFS, A* (star) and Dijkstra algorithms with visual.
 * For generating a maze run:
    * python generate.py unsolved_maze.txt(filename to save the maze)
 * The generated visual of maze will be saved in unsolved_maze.png

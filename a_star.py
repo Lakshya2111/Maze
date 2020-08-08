@@ -1,6 +1,5 @@
 import sys
 from PIL import ImageDraw,Image
-flag=0
 class Node():
 
     def __init__(self,pos,parent):
@@ -15,32 +14,35 @@ class STAR():
     def __init__(self):
         self.open=[]
         self.close=[]
-    def add_close(self,node):
-        self.close.append(node)
     def add_open(self,node):
         self.open.append(node)
     def contains(self,node):
-        if node in self.close:
-            return True
+        for i in self.open:
+            if i.pos==node.pos:
+                return True
         return False
     def empty(self):
         return len(self.open)==0
     def remove(self):
         if not self.empty():
-            self.open.sort(key=lambda x: x.f)
-            # self.open.sort()
-            return self.open.pop()
+            return self.open.pop(0)
         else:
              raise Exception('Empty')
+    def sort_cells(self):
+        self.open.sort(key=lambda x: x.f)
+    def update(self,node):
+        for i in self.open:
+            if node.pos==i.pos:
+                if node.f<i.f:
+                    i.f=node.f
     def valid_add(self,node):
-        if node in self.open:
-            for i in self.open:
-                if node==i and node.f>=i.f:
-                    return False
+        for i in self.open:
+            if i.pos==node.pos and i.f<=node.f:
+                return False
         return True
     def print(self):
         for i in self.open:
-            print((i.pos,i.parent),end=" ")
+            print(i.f,end=" ")
         print()
 class Maze():
 
@@ -50,9 +52,10 @@ class Maze():
 
         #validate start and end
         if contents.count('A')!=1:
-            print('need exactly one starting point')
+            raise Exception('need exactly one starting point')
         if contents.count('B')!=1:
-            print('need exactly one ending point')
+            raise Exception('need exactly one ending point')
+
 
         contents=contents.splitlines()
         self.height=len(contents)
@@ -98,28 +101,27 @@ class Maze():
             if open.empty():
                 break
             now=open.remove()
-            open.add_close(now)
             self.explored+=1
-            if now.pos==self.end:
+            if now.pos==end.pos:
                 path=[]
                 while now.parent:
                     path.append(now.pos)
                     now=now.parent
                 path.reverse()
-                print('Cost of a_star:',len(path))
                 self.solution=path[:]
                 return
             self.visited.add(now.pos)
             for i in self.neighbors(now.pos):
-                if not open.contains(i) and i not in self.visited:
+                 if i not in self.visited:
                     next=Node(i,parent=now)
                     next.g=abs(next.pos[0]-start.pos[0])+abs(next.pos[1]-start.pos[1])
                     next.h=abs(next.pos[0]-end.pos[0])+abs(next.pos[1]-end.pos[1])
                     next.f=next.g+next.h
                     if open.valid_add(next):
                         open.add_open(next)
-    def solvable(self):
-        return self.solution!=None
+            open.sort_cells()
+    def cost(self):
+        return len(self.solution)
     def print(self):
         print()
         for i in range(self.height):
@@ -189,26 +191,20 @@ class Maze():
         img.save(filename)
 
 
+if len(sys.argv) != 2:
+    sys.exit("Usage: python maze.py maze.txt")
 
-if not flag:
-    if len(sys.argv) != 2:
-        sys.exit("Usage: python maze.py maze.txt")
+maze = Maze(sys.argv[1])
+# print("Maze:")
+# maze.print()
+maze.solve()
+print("Solution:")
+maze.print()
+print("States Explored:", maze.explored)
+print("Cost of a* search:",maze.cost())
 
-    maze = Maze(sys.argv[1])
-    print("Maze:")
-    maze.print()
-    print("Solving...")
-    maze.solve()
-    if maze.solvable():
-        print("States Explored:", maze.explored)
-        print("Solution:")
-        maze.print()
-        maze.output_image("maze_a_star.png", show_solution=True,show_visited=True)
-    else:
-        print('No solution')
+maze.output_image("maze_a_star.png", show_solution=True,show_visited=True)
 def all(file):
-    flag=1
     maze = Maze(file)
     maze.solve()
-    if maze.solvable():
-        maze.output_image("maze_a_star.png", True,False)
+    maze.output_image("maze_a_star.png", True,False)

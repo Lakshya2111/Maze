@@ -1,8 +1,9 @@
 from PIL import ImageDraw,Image
 import random,sys
 from random import randint
-height=randint(10,20)
-width=randint(20,40)
+from copy import deepcopy
+height=randint(15,30)
+width=randint(height+10,50)
 maze=[]
 for i in range(height):
     row=[]
@@ -58,20 +59,62 @@ for i in range(1,len(path)):
             maze[path[i][0]+1][path[i][1]]=" "
         elif path[i][0]+1>=0:
             maze[path[i][0]-1][path[i][1]]=" "
-free=[]
-for i in range(height):
-    for j in range(width):
-        if maze[i][j]=='#':
-            free.append((i,j))
-start,end=free[randint(0,len(free)-1)],free[randint(0,len(free)-1)]
-maze[start[0]][start[1]]='A'
-maze[end[0]][end[1]]='B'
 for i in range(height):
     for j in range(width):
         if maze[i][j]=='#':
             maze[i][j]=' '
         elif maze[i][j]==' ':
             maze[i][j]='#'
+free=[]
+for i in range(height):
+    for j in range(width):
+        if maze[i][j]==' ':
+            free.append((i,j))
+
+def solvable(grid):
+    height=len(maze)
+    width=len(maze[0])
+    walls=[[False]*width for _ in range(height)]
+    for i in range(height):
+        for j in range(width):
+            if grid[i][j]=='#':
+                walls[i][j]=True
+            if grid[i][j]=='A':
+                start=(i,j)
+            if grid[i][j]=='B':
+                end=(i,j)
+    def neighbors(pos):
+        row,col=pos
+        neighbour=[]
+        actions=[(row+1,col),(row-1,col),(row,col+1),(row,col-1)]
+        for r,c in actions:
+            if 0<=r<height and 0<=c<width and not walls[r][c]:
+                neighbour.append((r,c))
+        return neighbour
+
+    visited=set()
+    stack=[start]
+    while stack:
+        now=stack.pop()
+        if now==end:
+            return True
+        visited.add(now)
+        for i in neighbors(now):
+            if i not in visited and i not in stack:
+                stack.append(i)
+    return False
+
+
+while(True):
+    start,end=free[randint(0,len(free)-1)],free[randint(0,len(free)-1)]
+    maze[start[0]][start[1]]='A'
+    maze[end[0]][end[1]]='B'
+    if solvable(deepcopy(maze)):
+        break
+    else:
+        maze[start[0]][start[1]]=' '
+        maze[end[0]][end[1]]=' '
+
 print_maze(maze)
 if len(sys.argv) != 2:
     sys.exit("Usage: python generate.py maze.txt")
@@ -80,6 +123,7 @@ with open(filename,'w') as file:
     for i in maze:
         file.write(''.join(i))
         file.write('\n')
+
 def output_image(filename):
     cell_size = 50
     cell_border = 2

@@ -37,9 +37,9 @@ class Maze():
 
         #validate start and end
         if contents.count('A')!=1:
-            print('need exactly one starting point')
+            raise Exception('need exactly one starting point')
         if contents.count('B')!=1:
-            print('need exactly one ending point')
+            raise Exception('need exactly one ending point')
 
         contents=contents.splitlines()
         self.height=len(contents)
@@ -76,6 +76,7 @@ class Maze():
     def solve(self):
 
         start=Node(self.start,None)
+        end=Node(self.end,None)
         queue=QUEUE()
         queue.add(start)
         self.visited=set()
@@ -85,13 +86,12 @@ class Maze():
                 break
             now=queue.remove()
             self.explored+=1
-            if now.pos==self.end:
+            if now.pos==end.pos:
                 path=[]
                 while now.parent:
                     path.append(now.pos)
                     now=now.parent
                 path.reverse()
-                print('Cost of BFS:',len(path))
                 self.solution=path[:]
                 return
             self.visited.add(now.pos)
@@ -99,8 +99,8 @@ class Maze():
                 if not queue.contains(i) and i not in self.visited:
                     next=Node(i,parent=now)
                     queue.add(next)
-    def solvable(self):
-        return self.solution!=None
+    def cost(self):
+        return len(self.solution)
     def print(self):
         print()
         for i in range(self.height):
@@ -174,19 +174,16 @@ if len(sys.argv) != 2:
     sys.exit("Usage: python maze.py maze.txt")
 
 maze = Maze(sys.argv[1])
-print("Maze:")
-maze.print()
-print("Solving...")
+# print("Maze:")
+# maze.print()
 maze.solve()
-if maze.solvable():
-    print("States Explored:", maze.explored)
-    print("Solution:")
-    maze.print()
-    maze.output_image("maze_BFS.png", show_solution=True,show_visited=True)
-else:
-    print('No solution')
+print("Solution:")
+maze.print()
+print("States Explored:", maze.explored)
+print("Cost of BFS:",maze.cost())
+maze.output_image("maze_BFS.png", show_solution=True,show_visited=True)
+
 def all(file):
     maze = Maze(file)
     maze.solve()
-    if maze.solvable():
-        maze.output_image("maze_BFS.png", True,False)
+    maze.output_image("maze_BFS.png", True,False)
