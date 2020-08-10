@@ -9,3 +9,27 @@ A maze generator and solver using BFS, DFS, A* (star) and Dijkstra algorithms wi
     * python all.py unsolved_maze.txt
 * Visual of maze will be saved to (algorithm_name).png
 * You can check the visited states by changing the show_visited to "True" in the source code of the algorithms
+
+### Unsolved Maze
+
+![unsolved](/Images/unsolved_maze.png)
+
+### A_star solution
+
+![A-star](/Images/maze_a_star.png)
+
+### A_star solution with explored states
+
+![A-star explored states](/Images/maze_a_star_explored.png)
+
+### Dijkstra solution
+
+![Dijkstra](/Images/maze_dijkstra.png)
+
+### BFS solution
+
+![BFS](/Images/maze_BFS.png)
+
+### DFS solution
+
+![DFS](/Images/maze_DFS.png)
