@@ -1,5 +1,6 @@
 import sys
 from PIL import ImageDraw,Image
+from heapq import heapify, heappush, heappop
 class Node():
 
     def __init__(self,pos):
@@ -9,9 +10,12 @@ class Dijkstra_algo():
 
     def __init__(self):
         self.distance=dict()
+        self.heap=[]
+        heapify(self.heap)
         self.shortest_distance=dict()
         self.parent=dict()
     def add_distance(self,node,distance):
+        heappush(self.heap,[distance,node])
         self.distance[node]=distance
     def add_shortest_distance(self,node,distance):
         self.shortest_distance[node]=distance
@@ -24,14 +28,14 @@ class Dijkstra_algo():
             return True
         return False
     def empty(self):
-        return len(self.distance)==0
+        return len(self.heap)==0
     def remove(self):
         if not self.empty():
-            temp=min(self.distance,key=lambda x: self.distance[x])
-            return temp
+            return heappop(self.heap)
         else:
              raise Exception('Empty')
     def update(self,node,value):
+        heappush(self.heap,[value,node])
         self.distance[node]=value
     def update_parent(self,node,parent):
         self.parent[node]=parent
@@ -97,18 +101,17 @@ class Maze():
         while True:
             if Dijkstra.empty():
                 break
-            now=Dijkstra.remove()
-            if Dijkstra.get_distance(now)==float('inf'):
+            short_distance,now=Dijkstra.remove()
+            if now==end.pos:
                 break
-            Dijkstra.add_shortest_distance(now,Dijkstra.get_distance(now))
-            Dijkstra.add_distance(now,float('inf'))
+            Dijkstra.add_shortest_distance(now,short_distance)
             self.explored+=1
             self.visited.add(now)
             for i in self.neighbors(now):
                 if Dijkstra.contains(i):
                     continue
-                if Dijkstra.get_distance(i)>Dijkstra.get_shortest_distance(now)+1:
-                    Dijkstra.update(i,Dijkstra.get_shortest_distance(now)+1)
+                if Dijkstra.get_distance(i)>short_distance+1:
+                    Dijkstra.update(i,short_distance+1)
                     Dijkstra.update_parent(i,now)
         path=[]
         node=end.pos
