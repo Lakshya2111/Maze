@@ -2,6 +2,8 @@ from PIL import ImageDraw,Image
 import random,sys
 from random import randint
 from copy import deepcopy
+if len(sys.argv) != 2:
+    sys.exit("Usage: python generate.py maze.txt")
 height=randint(15,30)
 width=randint(height+10,50)
 maze=[]
@@ -116,8 +118,6 @@ while(True):
         maze[end[0]][end[1]]=' '
 
 print_maze(maze)
-if len(sys.argv) != 2:
-    sys.exit("Usage: python generate.py maze.txt")
 filename = sys.argv[1]
 with open(filename,'w') as file:
     for i in maze:

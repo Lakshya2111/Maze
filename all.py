@@ -1,10 +1,9 @@
-import BFS as bfs
-import DFS as dfs
-import a_star as a_star
-import dijkstra as dijkstra
 import sys
-file=sys.argv[1]
-bfs.all(file)
-dfs.all(file)
-a_star.all(file)
-dijkstra.all(file)
+ 
+if len(sys.argv) != 2:
+    sys.exit("Usage: python all.py maze.txt")
+
+import BFS
+import DFS
+import a_star
+import dijkstra

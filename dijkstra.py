@@ -191,22 +191,21 @@ class Maze():
         img.save(filename)
 
 
+if __name__=="__main__":
 
+    if len(sys.argv) != 2:
+        sys.exit("Usage: python maze.py maze.txt")
 
-if len(sys.argv) != 2:
-    sys.exit("Usage: python maze.py maze.txt")
-
-maze = Maze(sys.argv[1])
-# print("Maze:")
-# maze.print()
-maze.solve()
-print("Solution:")
-maze.print()
-print("States Explored:", maze.explored)
-print("Cost of Dijkstra:",maze.cost())
-maze.output_image("maze_dijkstra.png", show_solution=True,show_visited=True)
-
-def all(file):
+    maze = Maze(sys.argv[1])
+    maze.solve()
+    print("Solution:")
+    maze.print()
+    print("States Explored:", maze.explored)
+    print("Cost of Dijkstra:",maze.cost())
+    maze.output_image("maze_dijkstra.png", show_solution=True,show_visited=False)
+else:
+    file=sys.argv[1]
     maze = Maze(file)
     maze.solve()
-    maze.output_image("maze_dijkstra.png", True,False)
+    print("Cost of Dijkstra:",maze.cost())
+    maze.output_image("maze_dijkstra.png", show_solution=True,show_visited=False)

@@ -168,22 +168,23 @@ class Maze():
                 )
 
         img.save(filename)
+def main():
+    if len(sys.argv) != 2:
+        sys.exit("Usage: python maze.py maze.txt")
 
+    maze = Maze(sys.argv[1])
+    maze.solve()
+    print("Solution:")
+    maze.print()
+    print("States Explored:", maze.explored)
+    print("Cost of BFS:",maze.cost())
+    maze.output_image("maze_BFS.png", show_solution=True,show_visited=False)
 
-if len(sys.argv) != 2:
-    sys.exit("Usage: python maze.py maze.txt")
-
-maze = Maze(sys.argv[1])
-# print("Maze:")
-# maze.print()
-maze.solve()
-print("Solution:")
-maze.print()
-print("States Explored:", maze.explored)
-print("Cost of BFS:",maze.cost())
-maze.output_image("maze_BFS.png", show_solution=True,show_visited=True)
-
-def all(file):
+if __name__=='__main__':
+    main()
+else:
+    file=sys.argv[1]
     maze = Maze(file)
     maze.solve()
-    maze.output_image("maze_BFS.png", True,False)
+    print("Cost of BFS:",maze.cost())
+    maze.output_image("maze_BFS.png", show_solution=True,show_visited=False)
